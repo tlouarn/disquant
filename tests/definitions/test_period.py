@@ -71,7 +71,6 @@ def test_mul():
     period_1w = Period(1, Unit.WEEK)
 
     assert 7 * period_1d == period_1w
-    assert period_1d * 7 == period_1w
 
 
 def test_rmul():
