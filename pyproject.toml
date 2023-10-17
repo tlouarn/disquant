@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "disquant"
+authors = [{ name = "tlouarn" }]
+description = "Pure-Python derivatives pricing library"
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3"
+]
+keywords = ["finance", "derivatives", "quantitative", "pricing", "python"]
+#dependencies = ["requests", "pydantic>=1.10"]
+version = "0.0.1"
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.urls]
+Homepage = "https://github.com/tlouarn/disquant"
+
+[tool.black]
+line-length = 90
+
+[tool.pytest.ini_options]
+addopts = "-p no:cacheprovider"
