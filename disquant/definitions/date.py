@@ -100,10 +100,10 @@ class Date:
         Expected string format is "YYYY-MM-DD".
         """
         if (
-            len(string) != 10
-            or not string[0:4].isnumeric()
-            or not string[5:7].isnumeric()
-            or not string[8:10].isnumeric()
+                len(string) != 10
+                or not string[0:4].isnumeric()
+                or not string[5:7].isnumeric()
+                or not string[8:10].isnumeric()
         ):
             raise ValueError(f"{string} is not a valid string: expecting YYYY-MM-DD")
 
