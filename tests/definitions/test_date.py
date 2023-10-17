@@ -7,7 +7,7 @@ from disquant.definitions.period import Period, Unit
 from tests.definitions.test_date_data import YEARS
 
 
-def test_constructor():
+def test_init():
     date = Date(2023, 9, 18)
 
     assert date.year == 2023
@@ -121,9 +121,11 @@ def test_excel():
 
 
 def test_str():
-    date = Date(2023, 9, 18)
+    date_1 = Date(2023, 9, 18)
+    date_2 = Date(2023, 12, 18)
 
-    assert str(date) == "2023-09-18"
+    assert str(date_1) == "2023-09-18"
+    assert str(date_2) == "2023-12-18"
 
 
 def test_weekday():
@@ -146,7 +148,7 @@ def test_is_weekend():
     assert Date(2023, 9, 24).is_weekend
 
 
-def test_is_leap_year():
+def test_is_leap():
     """
     Check that the function is correct for all years
     between 1901 and 2200
