@@ -46,26 +46,26 @@ class Date:
         if not MIN_YEAR <= year <= MAX_YEAR:
             error += f"year should be in [{MIN_YEAR}, {MAX_YEAR}]"
             raise ValueError(error)
-        self.year = year
+        self._year = year
 
         # Ensure the month is valid
         if not 1 <= month <= 12:
             error += "month should be in [1, 12]"
             raise ValueError(error)
-        self.month = month
+        self._month = month
 
         # Ensure the day is valid
         ends_of_months = ENDS_OF_MONTHS_LEAP_YEAR if self.is_leap else ENDS_OF_MONTHS
         if not 1 <= day <= ends_of_months[month - 1]:
-            error += f"day should be in [1,  {ends_of_months[month - 1]}]"
+            error += f"day should be in [1, {ends_of_months[month - 1]}]"
             raise ValueError(error)
-        self.day = day
+        self._day = day
 
     def __repr__(self) -> str:
-        return f"Date({self.year:02d}, {self.month:02d}, {self.day:02d})"
+        return f"Date({self._year:02d}, {self._month:02d}, {self.day:02d})"
 
     def __str__(self) -> str:
-        return f"{self.year:02d}-{self.month:02d}-{self.day:02d}"
+        return f"{self._year:02d}-{self._month:02d}-{self.day:02d}"
 
     @classmethod
     def today(cls) -> Self:
@@ -140,7 +140,7 @@ class Date:
         """
         Convert the date to a python datetime.date object.
         """
-        return dt.date(self.year, self.month, self.day)
+        return dt.date(self._year, self._month, self.day)
 
     def to_excel(self) -> int:
         """
@@ -149,6 +149,18 @@ class Date:
         """
         period = self - Date(1901, 1, 1)
         return 367 + period
+
+    @property
+    def year(self) -> int:
+        return self._year
+
+    @property
+    def month(self) -> int:
+        return self._month
+
+    @property
+    def day(self) -> int:
+        return self._day
 
     @property
     def weekday(self) -> Weekday:
@@ -166,7 +178,7 @@ class Date:
 
     @property
     def is_leap(self) -> bool:
-        return self.year % 4 == 0 and (self.year % 100 != 0 or self.year % 400 == 0)
+        return self._year % 4 == 0 and (self._year % 100 != 0 or self._year % 400 == 0)
 
     @property
     def is_eom(self) -> bool:
@@ -174,15 +186,15 @@ class Date:
         Check whether the current Date is an end of month.
         """
         ends_of_months = ENDS_OF_MONTHS_LEAP_YEAR if self.is_leap else ENDS_OF_MONTHS
-        return self.day == ends_of_months[self.month - 1]
+        return self.day == ends_of_months[self._month - 1]
 
     def get_eom(self) -> Date:
         """
         Return a new Date corresponding to the last day of the current month.
         """
         ends_of_months = ENDS_OF_MONTHS_LEAP_YEAR if self.is_leap else ENDS_OF_MONTHS
-        last_day = ends_of_months[self.month - 1]
-        return Date(self.year, self.month, last_day)
+        last_day = ends_of_months[self._month - 1]
+        return Date(self._year, self._month, last_day)
 
     def __add__(self, other: Period) -> Date:
         """
@@ -191,7 +203,7 @@ class Date:
         if not isinstance(other, Period):
             raise TypeError("Only a Period can be added to a Date")
 
-        date = dt.date(self.year, self.month, self.day)
+        date = dt.date(self._year, self._month, self.day)
         return self._add_delta(date, other)
 
     def __sub__(self, other: Date | Period) -> Date | int:
@@ -199,10 +211,10 @@ class Date:
         Subtracting a Date from another Date returns the number of calendar days in between as an integer.
         Subtracting a Period from a Date returns a new Date.
         """
-        date = dt.date(self.year, self.month, self.day)
+        date = dt.date(self._year, self._month, self.day)
 
         if isinstance(other, Date):
-            other = dt.date(other.year, other.month, other.day)
+            other = dt.date(other._year, other._month, other.day)
             return (date - other).days
 
         elif isinstance(other, Period):
@@ -216,7 +228,7 @@ class Date:
         """
         Required in order to use a Date as a dictionary key for instance.
         """
-        return hash((self.year, self.month, self.day))
+        return hash((self._year, self._month, self.day))
 
     @staticmethod
     def _add_delta(date: dt.date, period: Period):
@@ -229,14 +241,14 @@ class Date:
         return Date(new_date.year, new_date.month, new_date.day)
 
     def __eq__(self, other: Date) -> bool:
-        return self.year == other.year and self.month == other.month and self.day == other.day
+        return self._year == other._year and self._month == other._month and self.day == other.day
 
     def __lt__(self, other: Date) -> bool:
-        if self.year != other.year:
-            return self.year < other.year
+        if self._year != other._year:
+            return self._year < other._year
 
-        elif self.month != other.month:
-            return self.month < other.month
+        elif self._month != other._month:
+            return self._month < other._month
 
         elif self.day != other.day:
             return self.day < other.day
