@@ -50,7 +50,6 @@ def test_year_fraction_deltaquants():
     # Example 1
     start = Date(2007, 12, 28)
     end = Date(2008, 2, 28)
-
     thirty_360 = year_fraction(start, end, DayCount.THIRTY_360)
     thirty_e_360 = year_fraction(start, end, DayCount.THIRTY_E_360)
     act_360 = year_fraction(start, end, DayCount.ACTUAL_360)
