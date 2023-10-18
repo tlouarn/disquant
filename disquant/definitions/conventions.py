@@ -36,7 +36,7 @@ def year_fraction(start: Date, end: Date, day_count: DayCount) -> Decimal:
             This implementation follows the 30E/360 "Eurobond Basis" definition.
             2006 ISDA definitions 4.16g
             """
-            # Cap both start and end date to 30
+            # Cap both start and end dates to 30
             start_day = min(start.day, 30)
             end_day = min(end.day, 30)
 
