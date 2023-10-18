@@ -15,6 +15,19 @@ def test_init():
     assert date.day == 18
 
 
+def test_immutable():
+    date = Date(2023, 9, 18)
+
+    with pytest.raises(AttributeError):
+        date.year = 2024
+
+    with pytest.raises(AttributeError):
+        date.month = 10
+
+    with pytest.raises(AttributeError):
+        date.day = 19
+
+
 def test_invalid_date_raises_value_error():
     # Test month outside [1, 12]
     with pytest.raises(ValueError):
