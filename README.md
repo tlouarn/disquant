@@ -1,4 +1,5 @@
 
+
 ![disquant](disquant.png)
 
 
@@ -34,3 +35,6 @@ Disquant requires Python >= 3.12
 ```cmd
 pip install disquant
 ```
+=======
+A pure-python derivatives pricing library.
+
