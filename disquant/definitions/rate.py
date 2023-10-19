@@ -81,7 +81,7 @@ def discount(rate: InterestRate, start: Date, end: Date, day_count: DayCount) ->
     :return: the discount factor
     """
     compound_factor = compound(rate=rate, start=start, end=end, day_count=day_count)
-    factor = 1 / compound_factor
+    factor = Decimal(1) / compound_factor
     return factor
 
 
