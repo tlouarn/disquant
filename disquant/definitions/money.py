@@ -4,6 +4,11 @@ from decimal import Decimal
 from enum import StrEnum
 from functools import total_ordering
 
+"""
+Money object.
+Inspired by https://pypi.org/project/money/
+"""
+
 
 class Currency(StrEnum):
     EUR = "EUR"
@@ -52,8 +57,14 @@ class Money:
 
     def __add__(self, other: Money) -> Money:
         self._check(other)
-        return Money(self.amount + other.amount, self.currency)
+        return self.__class__(self.amount + other.amount, self.currency)
 
     def __sub__(self, other: Money) -> Money:
         self._check(other)
-        return Money(self.amount - other.amount, self.currency)
+        return self.__class__(self.amount - other.amount, self.currency)
+
+    def __hash__(self) -> int:
+        return hash((self._amount, self._currency))
+
+    def __round__(self, ndigits=0):
+        return self.__class__(round(self._amount, ndigits), self._currency)
