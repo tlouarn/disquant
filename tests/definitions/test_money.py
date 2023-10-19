@@ -85,3 +85,20 @@ def test_invalid_sub():
 
     with pytest.raises(ValueError):
         amount_3 = amount_1 - amount_2
+
+
+def test_hash():
+    """
+    Money is a hashable object so it can be used as a
+    dictionary key.
+    """
+    amount = Money(10_000_000, Currency.EUR)
+    thresholds = {amount: "CATEGORY"}
+
+    assert isinstance(thresholds, dict)
+
+
+def test_round():
+    amount_1 = Money("9.6", Currency.EUR)
+
+    assert round(amount_1, 0) == Money(10, Currency.EUR)

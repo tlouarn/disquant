@@ -3,6 +3,7 @@ from __future__ import annotations
 from decimal import Decimal
 from enum import StrEnum
 from functools import total_ordering
+from typing import Optional
 
 """
 Money object.
@@ -66,5 +67,5 @@ class Money:
     def __hash__(self) -> int:
         return hash((self._amount, self._currency))
 
-    def __round__(self, ndigits=0):
-        return self.__class__(round(self._amount, ndigits), self._currency)
+    def __round__(self, digits: Optional[int] = 0):
+        return self.__class__(round(self._amount, digits), self._currency)
