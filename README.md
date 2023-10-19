@@ -2,11 +2,11 @@
 
 ![disquant](disquant.png)
 
+---
 
 ![Python 3.10](https://img.shields.io/badge/python-3.12-blue)
 ![Black](https://img.shields.io/badge/code%20style-black-black)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 
 ### Mission statement
 
