@@ -74,8 +74,8 @@ def year_fraction(start: Date, end: Date, day_count: DayCount) -> Decimal:
             """
             The actual number of days is always divided by 365.
             2006 ISDA definitions 4.16d.
-            
-            Also known as "ACT/365" or "English". 
+
+            Also known as "ACT/365" or "English".
             Used in GBP money markets.
             """
             return Decimal(calendar_days) / Decimal(365)
