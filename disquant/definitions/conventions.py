@@ -23,6 +23,7 @@ class DayCount(str, Enum):
     ACTUAL_ACTUAL_ISDA = "ACT/ACT ISDA"
 
 
+# TODO rename
 def year_fraction(start: Date, end: Date, day_count: DayCount) -> Decimal:
     """
     Compute the fraction of year between two dates.
