@@ -18,7 +18,6 @@ class Currency(StrEnum):
 
 @total_ordering
 class Money:
-
     def __init__(self, amount: str | int | Decimal, currency: Currency) -> None:
         self._amount = Decimal(amount)
         self._currency = currency
@@ -69,3 +68,24 @@ class Money:
 
     def __round__(self, digits: Optional[int] = 0):
         return self.__class__(round(self._amount, digits), self._currency)
+
+    def __mul__(self, other: int | Decimal) -> Money:
+        return self.__class__(self._amount * other, self._currency)
+
+    def __rmul__(self, other: int | Decimal) -> Money:
+        return self.__mul__(other)
+
+    def __neg__(self):
+        return self.__class__(-self._amount, self._currency)
+
+    def __pos__(self):
+        return self.__class__(+self._amount, self._currency)
+
+    def __abs__(self):
+        return self.__class__(abs(self._amount), self._currency)
+
+    def __int__(self):
+        return int(self._amount)
+
+    def __float__(self):
+        return float(self._amount)
