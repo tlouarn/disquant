@@ -91,3 +91,4 @@ def year_fraction(start: Date, end: Date, day_count: DayCount) -> Decimal:
 
         case _:
             raise NotImplementedError
+
