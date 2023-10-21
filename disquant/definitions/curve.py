@@ -168,7 +168,7 @@ class DiscountCurve:
         """
         dates = []
         factors = []
-        for date in DateRange(start + Period(1, Unit.DAY), end):
+        for date in DateRange(start + Period(1, Unit.DAY), end + Period(1, Unit.DAY)):
             factor = discount(rate=rate, start=start, end=date, day_count=day_count)
             dates.append(date)
             factors.append(factor)
