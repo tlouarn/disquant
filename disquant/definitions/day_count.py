@@ -1,4 +1,3 @@
-from decimal import Decimal
 from enum import Enum
 
 from disquant.definitions.date import Date, DateRange
@@ -24,7 +23,7 @@ class DayCount(str, Enum):
 
 
 # TODO rename
-def year_fraction(start: Date, end: Date, day_count: DayCount) -> Decimal:
+def year_fraction(start: Date, end: Date, day_count: DayCount) -> float:
     """
     Compute the fraction of year between two dates.
     Used to compute the accrued interests on a wide range of financial instruments.
@@ -44,7 +43,7 @@ def year_fraction(start: Date, end: Date, day_count: DayCount) -> Decimal:
             days = 360 * (end.year - start.year)
             days += 30 * (end.month - start.month)
             days += end_day - start_day
-            return Decimal(days) / Decimal(360)
+            return days / 360
 
         case DayCount.THIRTY_360:
             """
@@ -62,13 +61,13 @@ def year_fraction(start: Date, end: Date, day_count: DayCount) -> Decimal:
             days = 360 * (end.year - start.year)
             days += 30 * (end.month - start.month)
             days += end_day - start_day
-            return Decimal(days) / Decimal(360)
+            return days / 360
 
         case DayCount.ACTUAL_360:
             """
             The actual number of days is always divided by 360.
             """
-            return Decimal(calendar_days) / Decimal(360)
+            return calendar_days / 360
 
         case DayCount.ACTUAL_365_FIXED:
             """
@@ -78,7 +77,7 @@ def year_fraction(start: Date, end: Date, day_count: DayCount) -> Decimal:
             Also known as "ACT/365" or "English".
             Used in GBP money markets.
             """
-            return Decimal(calendar_days) / Decimal(365)
+            return calendar_days / 365
 
         case DayCount.ACTUAL_ACTUAL_ISDA:
             """
@@ -87,8 +86,7 @@ def year_fraction(start: Date, end: Date, day_count: DayCount) -> Decimal:
             """
             leap = sum(1 for x in DateRange(start, end) if x.is_leap)
             non_leap = calendar_days - leap
-            return Decimal(leap) / Decimal(366) + Decimal(non_leap) / Decimal(365)
+            return leap / 366 + non_leap / 365
 
         case _:
             raise NotImplementedError
-

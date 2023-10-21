@@ -1,8 +1,6 @@
-from decimal import Decimal
-
 import pytest
 
-from disquant.definitions.conventions import DayCount, year_fraction
+from disquant.definitions.day_count import DayCount, year_fraction
 from disquant.definitions.date import Date
 from tests.definitions.test_conventions_data import ISDA_EXAMPLES
 
@@ -14,7 +12,7 @@ def test_init():
 
 
 @pytest.mark.parametrize("start_date,end_date,day_count,expected", ISDA_EXAMPLES)
-def test_year_fraction_isda(start_date: Date, end_date: Date, day_count: DayCount, expected: Decimal):
+def test_year_fraction_isda(start_date: Date, end_date: Date, day_count: DayCount, expected: float):
     assert year_fraction(start_date, end_date, day_count) == expected
 
 
@@ -25,7 +23,7 @@ def test_year_fraction_act_365_fixed():
 
     fraction = year_fraction(start_date, end_date, day_count)
 
-    assert fraction == Decimal(29) / Decimal(365)
+    assert fraction == 29 / 365
 
 
 def test_year_fraction_actual_actual_isda():
@@ -39,7 +37,7 @@ def test_year_fraction_actual_actual_isda():
 
     fraction = year_fraction(start_date, end_date, day_count)
 
-    assert fraction == Decimal(92) / Decimal(365) + Decimal(91) / Decimal(366)
+    assert fraction == 92 / 365 + 91 / 366
 
 
 def test_year_fraction_deltaquants():
@@ -56,11 +54,11 @@ def test_year_fraction_deltaquants():
     act_365_fixed = year_fraction(start, end, DayCount.ACTUAL_365_FIXED)
     act_act_isda = year_fraction(start, end, DayCount.ACTUAL_ACTUAL_ISDA)
 
-    assert thirty_360 == Decimal(60) / Decimal(360)
-    assert thirty_e_360 == Decimal(60) / Decimal(360)
-    assert act_act_isda == Decimal(4) / Decimal(365) + Decimal(58) / Decimal(366)
-    assert act_365_fixed == Decimal(62) / Decimal(365)
-    assert act_360 == Decimal(62) / Decimal(360)
+    assert thirty_360 == 60 / 360
+    assert thirty_e_360 == 60 / 360
+    assert act_act_isda == 4 / 365 + 58 / 366
+    assert act_365_fixed == 62 / 365
+    assert act_360 == 62 / 360
 
     # Example 2
     start = Date(2007, 12, 28)
@@ -71,11 +69,11 @@ def test_year_fraction_deltaquants():
     act_365_fixed = year_fraction(start, end, DayCount.ACTUAL_365_FIXED)
     act_act_isda = year_fraction(start, end, DayCount.ACTUAL_ACTUAL_ISDA)
 
-    assert thirty_360 == Decimal(61) / Decimal(360)
-    assert thirty_e_360 == Decimal(61) / Decimal(360)
-    assert act_act_isda == Decimal(4) / Decimal(365) + Decimal(59) / Decimal(366)
-    assert act_365_fixed == Decimal(63) / Decimal(365)
-    assert act_360 == Decimal(63) / Decimal(360)
+    assert thirty_360 == 61 / 360
+    assert thirty_e_360 == 61 / 360
+    assert act_act_isda == 4 / 365 + 59 / 366
+    assert act_365_fixed == 63 / 365
+    assert act_360 == 63 / 360
 
     # Example 3
     start = Date(2007, 10, 31)
@@ -86,11 +84,11 @@ def test_year_fraction_deltaquants():
     act_365_fixed = year_fraction(start, end, DayCount.ACTUAL_365_FIXED)
     act_act_isda = year_fraction(start, end, DayCount.ACTUAL_ACTUAL_ISDA)
 
-    assert thirty_360 == Decimal(390) / Decimal(360)
-    assert thirty_e_360 == Decimal(390) / Decimal(360)
-    assert act_act_isda == Decimal(62) / Decimal(365) + Decimal(334) / Decimal(366)
-    assert act_365_fixed == Decimal(396) / Decimal(365)
-    assert act_360 == Decimal(396) / Decimal(360)
+    assert thirty_360 == 390 / 360
+    assert thirty_e_360 == 390 / 360
+    assert act_act_isda == 62 / 365 + 334 / 366
+    assert act_365_fixed == 396 / 365
+    assert act_360 == 396 / 360
 
     # Example 4
     start = Date(2008, 2, 1)
@@ -101,8 +99,8 @@ def test_year_fraction_deltaquants():
     act_365_fixed = year_fraction(start, end, DayCount.ACTUAL_365_FIXED)
     act_act_isda = year_fraction(start, end, DayCount.ACTUAL_ACTUAL_ISDA)
 
-    assert thirty_360 == Decimal(480) / Decimal(360)
-    assert thirty_e_360 == Decimal(479) / Decimal(360)
-    assert act_act_isda == Decimal(335) / Decimal(366) + Decimal(150) / Decimal(365)
-    assert act_365_fixed == Decimal(485) / Decimal(365)
-    assert act_360 == Decimal(485) / Decimal(360)
+    assert thirty_360 == 480 / 360
+    assert thirty_e_360 == 479 / 360
+    assert act_act_isda == 335 / 366 + 150 / 365
+    assert act_365_fixed == 485 / 365
+    assert act_360 == 485 / 360

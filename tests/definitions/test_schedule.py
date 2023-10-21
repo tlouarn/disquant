@@ -1,6 +1,6 @@
 from holidays import financial_holidays
 
-from disquant.definitions.business_day import Convention
+from disquant.definitions.business_day import Adjustment
 from disquant.definitions.date import Date
 from disquant.definitions.period import Period, Unit
 from disquant.definitions.schedule import Roll, Stub, generate_schedule
@@ -12,7 +12,7 @@ def test_generate_schedule():
         end=Date(2023, 8, 28),
         step=Period(1, Unit.MONTH),
         holidays=financial_holidays("ECB"),
-        convention=Convention.MODIFIED_FOLLOWING,
+        adjustment=Adjustment.MODIFIED_FOLLOWING,
         stub=Stub.FRONT,
         roll=Roll.DOM,
     )
@@ -39,7 +39,7 @@ def test_generate_schedule_eom():
         end=Date(2023, 8, 28),
         step=Period(1, Unit.MONTH),
         holidays=financial_holidays("ECB"),
-        convention=Convention.MODIFIED_FOLLOWING,
+        adjustment=Adjustment.MODIFIED_FOLLOWING,
         stub=Stub.FRONT,
         roll=Roll.EOM,
     )

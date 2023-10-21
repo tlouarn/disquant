@@ -1,9 +1,6 @@
-from decimal import Decimal
-
-
-def linear_interpolation(x1: Decimal, y1: Decimal, x2: Decimal, y2: Decimal, x: Decimal) -> Decimal:
+def linear_interpolation(x1: float, y1: float, x2: float, y2: float, x: float) -> float:
     """
-    Linear interpolation between two points implemented using Decimal.
+    Linear interpolation between two points.
 
     :param x1: x-axis coordinate of point 1
     :param y1: y-axis coordinate of point 1

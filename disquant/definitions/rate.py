@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from decimal import Decimal
+import math
 from enum import Enum
 from functools import total_ordering
 from typing import Optional
 
-from disquant.definitions.conventions import DayCount, year_fraction
 from disquant.definitions.date import Date
+from disquant.definitions.day_count import DayCount, year_fraction
 
 
 class Compounding(str, Enum):
@@ -19,19 +19,18 @@ class Compounding(str, Enum):
 
 @total_ordering
 class InterestRate:
-    def __init__(self, value: str | Decimal, compounding: Optional[Compounding] = None) -> None:
+    def __init__(self, value: float, compounding: Optional[Compounding] = None) -> None:
         """
         If no compounding is passed, we assume it's a simple interest rate.
-        The interest rate can be a Decimal or a string (which will be converted to a Decimal).
 
         :param value: nominal interest rate per annum
         :param compounding: if the interest is compounded, compounding frequency
         """
-        self._value = Decimal(value)
+        self._value = value
         self._compounding = compounding
 
     @property
-    def value(self) -> Decimal:
+    def value(self) -> float:
         return self._value
 
     @property
@@ -47,7 +46,7 @@ class InterestRate:
         return not self.is_simple
 
     def str(self) -> str:
-        return f"{self._value * 100:.2f}%" + self.compounding
+        return f"{self._value * 100:.2f}% " + self.compounding
 
     def __repr__(self) -> str:
         return f"InterestRate(value={self._value}, compounding={self._compounding})"
@@ -71,7 +70,7 @@ class InterestRate:
         return self.__class__(round(self._value, digits), self._compounding)
 
 
-def discount(rate: InterestRate, start: Date, end: Date, day_count: DayCount) -> Decimal:
+def discount(rate: InterestRate, start: Date, end: Date, day_count: DayCount) -> float:
     """
     Compute the discount factor between two dates.
     Note: we need to provide actual dates, and not simply a number of days, in order
@@ -88,7 +87,7 @@ def discount(rate: InterestRate, start: Date, end: Date, day_count: DayCount) ->
     return factor
 
 
-def compound(rate: InterestRate, start: Date, end: Date, day_count: DayCount) -> Decimal:
+def compound(rate: InterestRate, start: Date, end: Date, day_count: DayCount) -> float:
     """
     Compute the compound factor between two dates.
     Note: we need to provide actual dates, and not simply a number of days, in order
@@ -121,14 +120,14 @@ def compound(rate: InterestRate, start: Date, end: Date, day_count: DayCount) ->
             return (1 + rate.value / 12) ** (t * 12)
 
         case Compounding.CONTINUOUS:
-            return Decimal.exp(rate.value * t)
+            return math.exp(rate.value * t)
 
         case _:
             raise NotImplementedError()
 
 
 def as_rate(
-    factor: Decimal,
+    factor: float,
     start: Date,
     end: Date,
     day_count: DayCount,
@@ -155,23 +154,23 @@ def as_rate(
             return InterestRate(rate, compounding)
 
         case Compounding.ANNUAL:
-            rate = Decimal.exp(Decimal.ln(1 / factor) / t) - 1
+            rate = math.exp(math.log(1 / factor) / t) - 1
             return InterestRate(rate, compounding)
 
         case Compounding.SEMI_ANNUAL:
-            rate = 2 * (Decimal.exp(Decimal.ln(1 / factor) / (2 * t)) - 1)
+            rate = 2 * (math.exp(math.log(1 / factor) / (2 * t)) - 1)
             return InterestRate(rate, compounding)
 
         case Compounding.QUARTERLY:
-            rate = 4 * (Decimal.exp(Decimal.ln(1 / factor) / (4 * t)) - 1)
+            rate = 4 * (math.exp(math.log(1 / factor) / (4 * t)) - 1)
             return InterestRate(rate, compounding)
 
         case Compounding.MONTHLY:
-            rate = 12 * (Decimal.exp(Decimal.ln(1 / factor) / (12 * t)) - 1)
+            rate = 12 * (math.exp(math.log(1 / factor) / (12 * t)) - 1)
             return InterestRate(rate, compounding)
 
         case Compounding.CONTINUOUS:
-            rate = Decimal.ln(1 / factor) / t
+            rate = math.log(1 / factor) / t
             return InterestRate(rate, compounding)
 
         case _:

@@ -19,12 +19,15 @@ def test_immutable():
     date = Date(2023, 9, 18)
 
     with pytest.raises(AttributeError):
+        # noinspection PyPropertyAccess
         date.year = 2024
 
     with pytest.raises(AttributeError):
+        # noinspection PyPropertyAccess
         date.month = 10
 
     with pytest.raises(AttributeError):
+        # noinspection PyPropertyAccess
         date.day = 19
 
 

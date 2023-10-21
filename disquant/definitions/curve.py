@@ -1,9 +1,9 @@
-from decimal import Decimal
+import math
 from enum import StrEnum
 from typing import Self
 
-from disquant.definitions.conventions import DayCount
 from disquant.definitions.date import Date, DateRange
+from disquant.definitions.day_count import DayCount
 from disquant.definitions.period import Period, Unit
 from disquant.definitions.rate import InterestRate, discount
 from disquant.utils.interpolation import linear_interpolation
@@ -21,14 +21,13 @@ class Method(StrEnum):
 
 
 class DiscountCurve:
-
-    def __init__(self, start: Date, dates: list[Date], factors: list[Decimal]) -> None:
+    def __init__(self, start: Date, dates: list[Date], factors: list[float]) -> None:
         """
         Construct a discount curve from a list of discount factors.
 
         :param start: start date of the curve
-        :param dates: list of dates for each discount factor
-        :param factors: list of Decimal for each discount factor
+        :param dates: list of discount factor dates
+        :param factors: list of discount factor values
         """
         # Check that each provided date is different
         if len(set(dates)) != len(dates):
@@ -63,10 +62,10 @@ class DiscountCurve:
         return self._dates
 
     @property
-    def factors(self) -> list[Decimal]:
+    def factors(self) -> list[float]:
         return self._factors
 
-    def spot(self, date: Date, method: Method) -> Decimal:
+    def spot(self, date: Date, method: Method) -> float:
         """
         Spot discount rate to the given date.
 
@@ -78,7 +77,7 @@ class DiscountCurve:
         # If the requested date is the start date,
         # return 1
         if date == self._start:
-            return Decimal(1)
+            return 1.0
 
         # If the requested date is one of the inputs,
         # return it
@@ -99,9 +98,9 @@ class DiscountCurve:
         df1 = self.factors[i - 1]
         df2 = self.factors[i]
 
-        x1 = Decimal(self._dates[i - 1] - self.start)
-        x2 = Decimal(self._dates[i] - self.start)
-        x = Decimal(date - self.start)
+        x1 = self._dates[i - 1] - self.start
+        x2 = self._dates[i] - self.start
+        x = date - self.start
 
         # Interpolate
         match method:
@@ -111,10 +110,10 @@ class DiscountCurve:
                 Zero rates are the continuously compounded spot rates inferred from
                 the discount curve.
                 """
-                y1 = -Decimal.ln(df1) / x1
-                y2 = -Decimal.ln(df2) / x2
+                y1 = -math.log(df1) / x1
+                y2 = -math.log(df2) / x2
                 interp = linear_interpolation(x1, y1, x2, y2, x)
-                y = Decimal.exp(-interp * x)
+                y = math.exp(-interp * x)
 
             case method.LINEAR_DISCOUNT_FACTOR:
                 """
@@ -129,17 +128,17 @@ class DiscountCurve:
                 Linear interpolation of the natural logarithm of the discount factors.
                 # TODO check also named "FLAT_FORWARD"
                 """
-                y1 = Decimal.ln(df1)
-                y2 = Decimal.ln(df2)
+                y1 = math.log(df1)
+                y2 = math.log(df2)
                 interp = linear_interpolation(x1, y1, x2, y2, x)
-                y = Decimal.exp(interp)
+                y = math.exp(interp)
 
             case _:
                 raise NotImplementedError
 
         return y
 
-    def forward(self, start: Date, end: Date, method: Method) -> Decimal:
+    def forward(self, start: Date, end: Date, method: Method) -> float:
         """
         Forward starting discount factor between two dates.
 
