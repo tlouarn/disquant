@@ -25,7 +25,7 @@ dev = ["pytest"]
 Homepage = "https://github.com/tlouarn/disquant"
 
 [tool.black]
-line-length = 90
+line-length = 120
 
 [tool.pytest.ini_options]
 addopts = "-p no:cacheprovider"
