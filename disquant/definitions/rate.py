@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import math
-from enum import Enum
+from enum import StrEnum
 from functools import total_ordering
 from typing import Optional
 
@@ -9,12 +9,20 @@ from disquant.definitions.date import Date
 from disquant.definitions.day_count import DayCount, year_fraction
 
 
-class Compounding(str, Enum):
+class Compounding(StrEnum):
     ANNUAL = "Annual"
     SEMI_ANNUAL = "SemiAnnual"
     QUARTERLY = "Quarterly"
     MONTHLY = "Monthly"
     CONTINUOUS = "Continuous"
+
+
+DISCRETE_COMPOUNDING = {
+    Compounding.ANNUAL: 1,
+    Compounding.SEMI_ANNUAL: 2,
+    Compounding.QUARTERLY: 4,
+    Compounding.MONTHLY: 12,
+}
 
 
 @total_ordering
@@ -101,12 +109,19 @@ def compound(rate: InterestRate, start: Date, end: Date, day_count: DayCount) ->
     """
     t = year_fraction(start=start, end=end, day_count=day_count)
 
-    match rate.compounding:
-        case None:
-            # If the compounding is not defined,
-            # we assume it's a simple interest rate
-            return 1 + rate.value * t
+    # If the compounding is not defined,
+    # we assume it's a simple interest rate
+    if rate.compounding is None:
+        return 1 + rate.value * t
 
+    # If the compounding is discrete but the accrual time
+    # is less than a compounding period, return a
+    # simple interest rate as well
+    if rate.compounding in DISCRETE_COMPOUNDING and t < 1 / DISCRETE_COMPOUNDING[rate.compounding]:
+        return 1 + rate.value * t
+
+    # Otherwise return a compounded rate
+    match rate.compounding:
         case Compounding.ANNUAL:
             return (1 + rate.value) ** t
 
@@ -126,6 +141,7 @@ def compound(rate: InterestRate, start: Date, end: Date, day_count: DayCount) ->
             raise NotImplementedError()
 
 
+# TODO TEST
 def as_rate(
     factor: float,
     start: Date,
