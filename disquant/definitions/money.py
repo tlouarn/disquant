@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from decimal import Decimal
 from enum import StrEnum
 from functools import total_ordering
 from typing import Optional
@@ -8,6 +7,9 @@ from typing import Optional
 """
 Money object.
 Inspired by https://pypi.org/project/money/
+
+Using floats instead of Decimal for consistency
+with the rest of the library.
 """
 
 
@@ -18,8 +20,8 @@ class Currency(StrEnum):
 
 @total_ordering
 class Money:
-    def __init__(self, amount: str | int | Decimal, currency: Currency) -> None:
-        self._amount = Decimal(amount)
+    def __init__(self, amount: float, currency: Currency) -> None:
+        self._amount = amount
         self._currency = currency
 
     def __str__(self) -> str:
@@ -29,7 +31,7 @@ class Money:
         return f"Money(amount={self.amount}, currency={self.currency})"
 
     @property
-    def amount(self) -> Decimal:
+    def amount(self) -> float:
         return self._amount
 
     @property
@@ -69,10 +71,10 @@ class Money:
     def __round__(self, digits: Optional[int] = 0):
         return self.__class__(round(self._amount, digits), self._currency)
 
-    def __mul__(self, other: int | Decimal) -> Money:
+    def __mul__(self, other: float) -> Money:
         return self.__class__(self._amount * other, self._currency)
 
-    def __rmul__(self, other: int | Decimal) -> Money:
+    def __rmul__(self, other: float) -> Money:
         return self.__mul__(other)
 
     def __neg__(self):
